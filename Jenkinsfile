@@ -12,12 +12,6 @@ pipeline {
     }
 
     stages {
-        stage('Clone') {
-            steps {
-                echo 'Code already fetched from GitHub by Jenkins'
-            }
-        }
-
         stage('Build and Test') {
             steps {
                 bat 'mvn clean package'
@@ -40,6 +34,12 @@ pipeline {
         stage('Run Container') {
             steps {
                 bat 'docker run -d -p 8087:8080 --name sample-webapp-container sample-webapp'
+            }
+        }
+
+        stage('Archive WAR') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.war', fingerprint: true
             }
         }
     }
